@@ -12,9 +12,13 @@ import {Link} from "expo-router";
 import { ActivityIndicator, Pressable } from 'react-native';
 import { useQuery } from '@tanstack/react-query';
 import { fetchProductById } from '@/api/products';
+import { useCart } from '@/store/cartStore';
 
 export default function ProductDetailsScreen(){
     const { id } = useLocalSearchParams<{id:string}>();
+
+    const addProduct = useCart((state) => state.addProduct);
+    // const cartItems = useCart((state) => state.items);
 
     const{data, isLoading, error} = useQuery({
         queryKey: ['products', id],
@@ -22,6 +26,11 @@ export default function ProductDetailsScreen(){
     });
 
     const product = products.find(p => p.id === Number(id));
+
+
+    const addToCart = () => {
+        addProduct(product);
+    }
 
     if(isLoading){
         return <ActivityIndicator/>;
@@ -59,7 +68,7 @@ export default function ProductDetailsScreen(){
                         </Text>
                     </VStack>
                     <Box className="flex-col sm:flex-row">
-                        <Button className="px-4 py-2 mr-0 mb-3 sm:mr-3 sm:mb-0 sm:flex-1">
+                        <Button onPress={addToCart} className="px-4 py-2 mr-0 mb-3 sm:mr-3 sm:mb-0 sm:flex-1">
                         <ButtonText size="sm">Add to cart</ButtonText>
                         </Button>
                         <Button

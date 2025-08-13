@@ -1,11 +1,13 @@
 import { StyleSheet, Text, View } from "react-native";
+import { useCart } from '@/store/cartStore';
 
 export default function CartScreen() {
+  const items = useCart((state) => state.items);
+
   return (
     <View style={styles.container}>
       <View style={styles.main}>
         <Text style={styles.title}>Cart Screen</Text>
-        <Text style={styles.subtitle}>This is the cart page of your app.</Text>
       </View>
     </View>
   );
