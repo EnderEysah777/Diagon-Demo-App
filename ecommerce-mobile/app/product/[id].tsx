@@ -9,12 +9,27 @@ import { Heading } from "@/components/ui/heading";
 import { Button, ButtonText } from "@/components/ui/button";
 import { Box } from "@/components/ui/box";
 import {Link} from "expo-router";
-import { Pressable } from 'react-native';
+import { ActivityIndicator, Pressable } from 'react-native';
+import { useQuery } from '@tanstack/react-query';
+import { fetchProductById } from '@/api/products';
 
 export default function ProductDetailsScreen(){
     const { id } = useLocalSearchParams<{id:string}>();
 
+    const{data, isLoading, error} = useQuery({
+        queryKey: ['products', id],
+        queryFn: () => fetchProductById(Number(id)),
+    });
+
     const product = products.find(p => p.id === Number(id));
+
+    if(isLoading){
+        return <ActivityIndicator/>;
+    }
+
+    if(error){
+        return <Text>Product not found!</Text>;
+    }
 
     if(!product){
         return <Text>Product not found</Text>;
